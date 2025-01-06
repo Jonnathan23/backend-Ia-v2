@@ -2,6 +2,7 @@ import os
 import io
 import numpy as np
 import requests
+import gdown
 from PIL import Image
 from django.http import JsonResponse
 from django.views import View
@@ -10,20 +11,34 @@ from django.utils.decorators import method_decorator
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import img_to_array
 
-# Ruta al archivo del modelo
-MODEL_URL = "https://drive.google.com/file/d/1EqkvESvK26GS9xV_ULDxrSUlivWJdRMt/view?usp=sharing"
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '../media/modelo_multilabel4.keras')
+# URL pública del archivo en Google Drive
+# Ruta para guardar el modelo descargado
+MODEL_PATH = os.path.join("media", "modelo_multilabel4.keras")
 
-'''# Descarga el modelo si no está presente
-if not os.path.exists(MODEL_PATH):
-    response = requests.get(MODEL_URL)
-    print('Descargando modelo...')
-    with open(MODEL_PATH, 'wb') as f:
-        f.write(response.content)
+# ID del archivo en Google Drive
+FILE_ID = "1EqkvESvK26GS9xV_ULDxrSUlivWJdRMt"
 
-'''
-# Cargar el modelo
-model = tf.keras.models.load_model(MODEL_PATH)
+# URL de descarga directa desde Google Drive
+URL = f"https://drive.google.com/uc?id={FILE_ID}"
+
+# Función para descargar el modelo si no existe
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        print("Descargando modelo desde Google Drive...")
+        gdown.download(URL, MODEL_PATH, quiet=False)
+        print("Descarga completada.")
+    else:
+        print("El modelo ya existe en la ruta especificada.")
+
+# Llama a la función para asegurarte de que el modelo esté disponible
+download_model()
+
+# Carga el modelo
+try:
+    model = tf.keras.models.load_model(MODEL_PATH)
+    print("Modelo cargado exitosamente.")
+except Exception as e:
+    print(f"Error al cargar el modelo: {e}")
 
 # Etiquetas de clase
 LABELS = [

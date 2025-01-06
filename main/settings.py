@@ -12,6 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'https://cheery-sprite-f56dfe.netlify.app/'
 ]
 
 # Quick-start development settings - unsuitable for production
@@ -23,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -73,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'main.wsgi.application'
+WSGI_APPLICATION = 'main.wsgi.app'
 
 
 # Database
@@ -123,6 +124,9 @@ USE_TZ = True
 
 CORS_URLS_REGEX = r'^/predict/.*$'
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # This production code might break development mode, so we check whether we're in DEBUG mode
 if not DEBUG:
